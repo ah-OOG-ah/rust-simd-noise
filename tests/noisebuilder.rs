@@ -1,4 +1,4 @@
-use simdnoise::{NoiseBuilder, Settings, SimplexSettings};
+use cursednoise::{NoiseBuilder, Settings, SimplexSettings};
 
 mod helpers;
 use helpers::{read_from_file_f32, BIN_PATH};

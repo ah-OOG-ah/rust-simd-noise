@@ -3,7 +3,7 @@ use std::slice::Iter;
 
 use clap::{Parser, Subcommand, ValueEnum};
 use minifb::{Key, Window, WindowOptions};
-use simdnoise::{CellDistanceFunction, Settings, SimplexSettings};
+use simdnoise::{Settings, SimplexSettings};
 
 const FPS: usize = 60;
 
@@ -31,9 +31,6 @@ struct Args {
 
     #[clap(long, value_parser, default_value_t = DEPTH, help="The z dimension of the generated image", global=true, required=false)]
     pub depth: usize,
-
-    #[clap(long, value_parser, default_value_t = TIME, help="The w dimension of the generated image", global=true, required=false)]
-    pub time: usize,
 
     #[clap(long, value_parser, default_value_t = Dimension::Three, help="The number of dimensions of the generated noise", global=true)]
     pub dimension: Dimension,
@@ -74,15 +71,6 @@ struct Args {
     )]
     pub offset_z: Option<f32>,
 
-    #[clap(
-        long,
-        value_parser,
-        help = "Use an offset for the fourth dimension",
-        global = true,
-        required = false
-    )]
-    pub offset_w: Option<f32>,
-
     #[command(subcommand)]
     command: Commands,
 }
@@ -92,7 +80,6 @@ enum Dimension {
     One,
     Two,
     Three,
-    Four,
 }
 
 impl Display for Dimension {
@@ -101,7 +88,6 @@ impl Display for Dimension {
             Dimension::One => "one",
             Dimension::Two => "two",
             Dimension::Three => "three",
-            Dimension::Four => "four",
         };
         write!(f, "{}", num)
     }
@@ -113,16 +99,6 @@ enum Distance {
     Euclidean,
     Manhattan,
     Natural,
-}
-
-impl From<Distance> for CellDistanceFunction {
-    fn from(distance: Distance) -> Self {
-        match distance {
-            Distance::Euclidean => CellDistanceFunction::Euclidean,
-            Distance::Manhattan => CellDistanceFunction::Manhattan,
-            Distance::Natural => CellDistanceFunction::Natural,
-        }
-    }
 }
 
 impl Display for Distance {
@@ -139,39 +115,7 @@ impl Display for Distance {
 #[derive(Debug, Subcommand)]
 enum Commands {
     #[command(arg_required_else_help = false)]
-    Cellular {
-        #[clap(long, value_parser, default_value_t = Distance::Euclidean, help="The distance function", global=true)]
-        distance: Distance,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_FREQUENCY)]
-        frequency: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_JITTER)]
-        jitter: f32,
-        //@TODO: index0/1
-    },
-    #[command(arg_required_else_help = false)]
     FBM {
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_FREQUENCY)]
-        frequency: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_LACUNARITY)]
-        lacunarity: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_GAIN)]
-        gain: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_OCTAVES)]
-        octaves: u8,
-    },
-    #[command(arg_required_else_help = false)]
-    Ridge {
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_FREQUENCY)]
-        frequency: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_LACUNARITY)]
-        lacunarity: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_GAIN)]
-        gain: f32,
-        #[arg(short, long, value_parser, default_value_t = DEFAULT_OCTAVES)]
-        octaves: u8,
-    },
-    #[command(arg_required_else_help = false)]
-    Turbulence {
         #[arg(short, long, value_parser, default_value_t = DEFAULT_FREQUENCY)]
         frequency: f32,
         #[arg(short, long, value_parser, default_value_t = DEFAULT_LACUNARITY)]
@@ -189,7 +133,6 @@ struct Coordinate<T> {
     x: T,
     y: T,
     z: T,
-    w: T,
 }
 
 impl<T> Default for Coordinate<T>
@@ -201,7 +144,6 @@ where
             x: T::default(),
             y: T::default(),
             z: T::default(),
-            w: T::default(),
         }
     }
 }
@@ -218,7 +160,6 @@ where
         x: Option<T>,
         y: Option<T>,
         z: Option<T>,
-        w: Option<T>,
     ) -> Self {
         let mut coord = Coordinate::<T>::default();
         match (dimension, x, y, z, w) {
@@ -252,24 +193,6 @@ where
                     None => T::default(),
                 };
             }
-            (Dimension::Four, x, y, z, w) => {
-                coord.x = match x {
-                    Some(xu) => xu,
-                    None => T::default(),
-                };
-                coord.y = match y {
-                    Some(yu) => yu,
-                    None => T::default(),
-                };
-                coord.z = match z {
-                    Some(zu) => zu,
-                    None => T::default(),
-                };
-                coord.w = match w {
-                    Some(wu) => wu,
-                    None => T::default(),
-                };
-            }
             _ => {
                 panic!(
                     "Coordinate parameters are not matching for this dimension {:?}",
@@ -296,25 +219,6 @@ fn noise_2d_to_frames(noise: Vec<f32>) -> Vec<Vec<u32>> {
 
 fn noise_3d_to_frames(noise: Vec<f32>) -> Vec<Vec<u32>> {
     noise_2d_to_frames(noise)
-}
-
-fn noise_4d_to_frames(noise: Vec<f32>, position: Coordinate<usize>) -> Vec<Vec<u32>> {
-    let mut frames = Vec::with_capacity(position.z * position.z);
-    let frame_size = position.x * position.y;
-    let mut niter: Iter<f32> = noise.iter();
-    for _w in 0..position.w {
-        for _z in 0..position.z {
-            let mut frame = Vec::with_capacity(frame_size);
-            for _xy in 0..frame_size {
-                let pix = niter.next();
-                if let Some(xy) = pix {
-                    frame.push(*xy as u32);
-                }
-            }
-            frames.push(frame);
-        }
-    }
-    frames
 }
 
 macro_rules! common_build_settings {
@@ -377,22 +281,6 @@ macro_rules! process_noise_command {
                 let noise = common_build_settings!(builder, $seed, SCALE_MIN, SCALE_MAX);
                 noise_3d_to_frames(noise)
             }
-            Dimension::Four => {
-                let mut builder = simdnoise::NoiseBuilder::$func_4d(
-                    $offset.x,
-                    $position.x,
-                    $offset.y,
-                    $position.y,
-                    $offset.z,
-                    $position.z,
-                    $offset.w,
-                    $position.w,
-                );
-                let builder =
-                    noise_build_settings!(builder, $frequency, $lacunarity, $gain, $octaves);
-                let noise = common_build_settings!(builder, $seed, SCALE_MIN, SCALE_MAX);
-                noise_4d_to_frames(noise, $position)
-            }
         }
     };
 }
@@ -405,32 +293,6 @@ fn process_command(
     offset: Coordinate<f32>,
 ) -> Vec<Vec<u32>> {
     match command {
-        Commands::Cellular {
-            frequency,
-            jitter,
-            distance,
-        } => match dimension {
-            Dimension::Two => {
-                let mut builder = simdnoise::NoiseBuilder::cellular_2d_offset(
-                    offset.x, position.x, offset.y, position.y,
-                );
-                let builder = cellular_build_settings!(builder, frequency, jitter, distance.into());
-                let noise = common_build_settings!(builder, seed, SCALE_MIN, SCALE_MAX);
-                noise_2d_to_frames(noise)
-            }
-            Dimension::Three => {
-                let mut builder = simdnoise::NoiseBuilder::cellular_3d_offset(
-                    offset.x, position.x, offset.y, position.y, offset.z, position.z,
-                );
-                let builder = cellular_build_settings!(builder, frequency, jitter, distance.into());
-                let noise = common_build_settings!(builder, seed, SCALE_MIN, SCALE_MAX);
-                noise_3d_to_frames(noise)
-            }
-            _ => {
-                unimplemented!()
-            }
-        },
-
         Commands::FBM {
             frequency,
             lacunarity,
@@ -441,44 +303,6 @@ fn process_command(
             fbm_2d_offset,
             fbm_3d_offset,
             fbm_4d_offset,
-            dimension,
-            seed,
-            position,
-            offset,
-            frequency,
-            lacunarity,
-            gain,
-            octaves
-        ),
-        Commands::Ridge {
-            frequency,
-            lacunarity,
-            gain,
-            octaves,
-        } => process_noise_command!(
-            ridge_1d_offset,
-            ridge_2d_offset,
-            ridge_3d_offset,
-            ridge_4d_offset,
-            dimension,
-            seed,
-            position,
-            offset,
-            frequency,
-            lacunarity,
-            gain,
-            octaves
-        ),
-        Commands::Turbulence {
-            frequency,
-            lacunarity,
-            gain,
-            octaves,
-        } => process_noise_command!(
-            turbulence_1d_offset,
-            turbulence_2d_offset,
-            turbulence_3d_offset,
-            turbulence_4d_offset,
             dimension,
             seed,
             position,
@@ -514,14 +338,6 @@ fn process_command(
                 let noise = common_build_settings!(builder, seed, SCALE_MIN, SCALE_MAX);
                 noise_3d_to_frames(noise)
             }
-            Dimension::Four => {
-                let mut builder = simdnoise::NoiseBuilder::gradient_4d_offset(
-                    offset.x, position.x, offset.y, position.y, offset.z, position.z, offset.w,
-                    position.w,
-                );
-                let noise = common_build_settings!(builder, seed, SCALE_MIN, SCALE_MAX);
-                noise_4d_to_frames(noise, position)
-            }
         },
     }
 }
@@ -541,13 +357,12 @@ fn main() {
     });
     window.set_target_fps(FPS);
 
-    let position = Coordinate::new(args.width, args.height, args.depth, args.time);
+    let position = Coordinate::new(args.width, args.height, args.depth);
     let offset = Coordinate::new_checked(
         args.dimension,
         args.offset_x,
         args.offset_y,
         args.offset_z,
-        args.offset_w,
     );
     let buffers = process_command(args.command, args.dimension, args.seed, position, offset);
     while window.is_open() && !window.is_key_down(Key::Escape) {
