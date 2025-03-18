@@ -3,7 +3,6 @@
 //! Useful for writing your own SIMD-generic code for use cases not covered by the higher level
 //! interfaces.
 
-use crate::noise::cellular_32::{X_PRIME_32, Y_PRIME_32, Z_PRIME_32};
 use crate::noise::gradient_32::{grad1, grad2, grad3d, grad3d_dot, grad4};
 use crate::noise::ops::gather_32;
 
@@ -11,6 +10,18 @@ use simdeez::prelude::*;
 
 use std::f32;
 use std::f64;
+
+pub const X_PRIME_32: i32 = 1619;
+pub const X_PRIME_64: i64 = 1619;
+
+pub const Y_PRIME_32: i32 = 31337;
+pub const Y_PRIME_64: i64 = 31337;
+
+// It seems that b47708e459 had a typo and set this value to 6791.
+// That seems to be a type (not 100 % sure though), because it is also a prime.
+// This went unnoticed untill cce07cdc.
+pub const Z_PRIME_32: i32 = 6971;
+pub const Z_PRIME_64: i64 = 6971;
 
 /// Skew factor for 2D simplex noise
 const F2_32: f32 = 0.36602540378;
