@@ -9,7 +9,14 @@ categories = ["game-engines", "multimedia::images"]
 edition = "2024"
 
 [lib]
-crate-type = ["staticlib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 cursednoise = { path = ".." }
+libc-print = "0.1.23"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"

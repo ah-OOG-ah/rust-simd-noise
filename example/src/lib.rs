@@ -1,21 +1,7 @@
-use std::fmt::{Display, Formatter, Result};
-use std::slice::Iter;
+#![no_std]
+
+use libc_print::std_name::{print, println};
 use cursednoise::{NoiseBuilder, Settings, SimplexSettings};
-
-const FPS: usize = 60;
-
-const WIDTH: usize = 1920;
-const HEIGHT: usize = 1080;
-const DEPTH: usize = 1;
-const TIME: usize = 5;
-const DEFAULT_FREQUENCY: f32 = 1.2;
-const DEFAULT_JITTER: f32 = 1.2;
-const DEFAULT_LACUNARITY: f32 = 0.5;
-const DEFAULT_GAIN: f32 = 2.0;
-const DEFAULT_OCTAVES: u8 = 3;
-
-const SCALE_MIN: f32 = 0.0;
-const SCALE_MAX: f32 = 255.0;
 
 fn main() {
 
