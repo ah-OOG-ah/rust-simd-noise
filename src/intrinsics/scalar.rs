@@ -14,7 +14,8 @@ use crate::shared::scale_noise;
 
 use simdeez::{SimdTransmuteF32, SimdTransmuteF64};
 
-use std::f32;
+use core::f32;
+use alloc::vec::Vec;
 
 simplex!(
     "1d",
@@ -44,15 +45,6 @@ simplex!(
     try_transmute_scalar
 );
 simplex!(
-    "4d",
-    simplex_4d,
-    f32,
-    SimdTransmuteF32::try_transmute_from_scalar,
-    i32,
-    simplex_32,
-    try_transmute_scalar
-);
-simplex!(
     "1d",
     simplex_1d_f64,
     f64,
@@ -73,15 +65,6 @@ simplex!(
 simplex!(
     "3d",
     simplex_3d_f64,
-    f64,
-    SimdTransmuteF64::try_transmute_from_scalar,
-    i64,
-    simplex_64,
-    try_transmute_scalar
-);
-simplex!(
-    "4d",
-    simplex_4d_f64,
     f64,
     SimdTransmuteF64::try_transmute_from_scalar,
     i64,
@@ -116,15 +99,6 @@ fbm!(
     try_transmute_scalar
 );
 fbm!(
-    "4d",
-    fbm_4d,
-    f32,
-    SimdTransmuteF32::try_transmute_from_scalar,
-    i32,
-    fbm_32,
-    try_transmute_scalar
-);
-fbm!(
     "1d",
     fbm_1d_f64,
     f64,
@@ -145,15 +119,6 @@ fbm!(
 fbm!(
     "3d",
     fbm_3d_f64,
-    f64,
-    SimdTransmuteF64::try_transmute_from_scalar,
-    i64,
-    fbm_64,
-    try_transmute_scalar
-);
-fbm!(
-    "4d",
-    fbm_4d_f64,
     f64,
     SimdTransmuteF64::try_transmute_from_scalar,
     i64,

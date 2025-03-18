@@ -1,2 +1,2 @@
 [build]
-rustflags = ["-Zlocation-detail=none", "-Zfmt-debug=none"]
+rustflags = ["-C", "target-cpu=native", "-Zlocation-detail=none", "-Zfmt-debug=none"]

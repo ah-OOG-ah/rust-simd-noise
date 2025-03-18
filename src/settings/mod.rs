@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 pub use crate::noise_dimensions::NoiseDimensions;
 pub use crate::noise_type::NoiseType;
 

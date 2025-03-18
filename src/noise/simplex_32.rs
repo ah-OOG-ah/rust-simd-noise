@@ -8,8 +8,8 @@ use crate::noise::ops::gather_32;
 
 use simdeez::prelude::*;
 
-use std::f32;
-use std::f64;
+use core::f32;
+use core::f64;
 
 pub const X_PRIME_32: i32 = 1619;
 pub const X_PRIME_64: i64 = 1619;

@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 use simdeez::prelude::*;
 
 use crate::{dimensional_being::DimensionalBeing, NoiseType};

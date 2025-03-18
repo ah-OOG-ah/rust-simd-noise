@@ -5,25 +5,11 @@
 //!
 //!## Features
 //!
-//!* SSE2, SSE41, and AVX2 instruction sets, along with non SIMD fallback
-//!* Runtime detection picks the best available instruction set
-//!* Simplex noise, fractal brownian motion, turbulence, and ridge
-//!* 1D, 2D, 3D, and 4D
-//!* Cellular / Voroni Noise  2D and 3D
-//!
-//!## Benchmarks
-//! See [Github](https://github.com/verpeteren/rust-simd-noise)
-//!## Todo
-//!
-//!* AVX512 support
-//!* ARM NEON support
-//!* Other noise types
+//!* AVX2 instruction and a non SIMD fallback
+//!* Simplex noise, fractal brownian motion
+//!* 1D, 2D, 3D
 //!
 //!# Examples
-//!
-//!## Get a block of noise with runtime SIMD detection
-//!
-//! The library will, at runtime, pick the fastest available options between SSE2, SSE41, and AVX2
 //!
 //! ```rust
 //! use cursednoise::*;
@@ -33,26 +19,12 @@
 //!
 //! ```
 //!
-//! ## Call noise functions directly
-//! Sometimes you need something other than a block, like the points on the surface of a sphere.
-//! Sometimes you may want to use SSE41 even with AVX2 is available
-//!
-//!
-#![cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), doc = "```rust")]
-#![cfg_attr(
-    not(any(target_arch = "x86", target_arch = "x86_64")),
-    doc = "```rust,ignore"
-)]
-//! use cursednoise::*;
-//! use core::arch::x86_64::*;
-//!
-//!
-//! // send your own SIMD x,y values to the noise functions directly
-//! unsafe {
-//! }
 //! ```
+#![no_std]
 
 extern crate simdeez;
+extern crate alloc;
+
 mod dimensional_being;
 pub mod intrinsics;
 pub mod noise;
@@ -63,6 +35,7 @@ mod noise_helpers_64;
 mod noise_type;
 mod shared;
 
+use alloc::vec::Vec;
 use simdeez::fix_tuple_type;
 use shared::get_scaled_noise;
 use simdeez::prelude::*;

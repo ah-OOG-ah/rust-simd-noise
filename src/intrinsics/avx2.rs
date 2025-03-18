@@ -19,12 +19,11 @@ use crate::{DimensionalBeing, NoiseType};
 
 use simdeez::{SimdTransmuteF32, SimdTransmuteF64};
 
-#[cfg(target_arch = "x86")]
-use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
-use std::arch::x86_64::*;
+use core::arch::x86_64::*;
 
-use std::f32;
+use core::f32;
+use alloc::vec::Vec;
 
 simplex!(
     "1d",
@@ -47,15 +46,6 @@ simplex!(
 simplex!(
     "3d",
     simplex_3d,
-    __m256,
-    SimdTransmuteF32::try_transmute_from_avx2,
-    i32,
-    simplex_32,
-    try_transmute_avx2
-);
-simplex!(
-    "4d",
-    simplex_4d,
     __m256,
     SimdTransmuteF32::try_transmute_from_avx2,
     i32,
@@ -89,16 +79,6 @@ simplex!(
     simplex_64,
     try_transmute_avx2
 );
-simplex!(
-    "4d",
-    simplex_4d_f64,
-    __m256d,
-    SimdTransmuteF64::try_transmute_from_avx2,
-    i64,
-    simplex_64,
-    try_transmute_avx2
-);
-
 fbm!(
     "1d",
     fbm_1d,
@@ -127,15 +107,6 @@ fbm!(
     try_transmute_avx2
 );
 fbm!(
-    "4d",
-    fbm_4d,
-    __m256,
-    SimdTransmuteF32::try_transmute_from_avx2,
-    i32,
-    fbm_32,
-    try_transmute_avx2
-);
-fbm!(
     "1d",
     fbm_1d_f64,
     __m256d,
@@ -156,15 +127,6 @@ fbm!(
 fbm!(
     "3d",
     fbm_3d_f64,
-    __m256d,
-    SimdTransmuteF64::try_transmute_from_avx2,
-    i64,
-    fbm_64,
-    try_transmute_avx2
-);
-fbm!(
-    "4d",
-    fbm_4d_f64,
     __m256d,
     SimdTransmuteF64::try_transmute_from_avx2,
     i64,

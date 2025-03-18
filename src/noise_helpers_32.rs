@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 use crate::dimensional_being::DimensionalBeing;
 use crate::{
     FbmSettings, GradientSettings, NoiseType,
@@ -6,7 +7,7 @@ use crate::{
 
 use simdeez::prelude::*;
 
-use std::f32;
+use core::f32;
 
 pub trait Sample32<S: Simd>: DimensionalBeing + Settings {
     fn sample_1d(&self, x: S::Vf32) -> S::Vf32;
