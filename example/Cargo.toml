@@ -8,6 +8,8 @@ repository = "https://github.com/ah-OOG-ah/rust-simd-noise"
 categories = ["game-engines", "multimedia::images"]
 edition = "2024"
 
+[lib]
+crate-type = ["staticlib"]
 
 [dependencies]
 cursednoise = { path = ".." }
