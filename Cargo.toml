@@ -20,12 +20,6 @@ simdeez = { path = "simdeez", features = ["no_std"] }
 [dev-dependencies]
 byteorder = "1.4.3"
 
-[profile.dev]
-strip = true
-lto = true
-codegen-units = 1
-panic = "abort"
-
 [profile.release]
 strip = true
 lto = true

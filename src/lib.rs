@@ -15,12 +15,13 @@
 //! use cursednoise::*;
 //!
 //! // Get a block of 2d fbm noise with default settings, 100 x 100, with values scaled to the range [0,1]
-//! let noise =  NoiseBuilder::fbm_2d(100, 100).generate_scaled(0.0,1.0);
+//! let mut noise = [0.0; 100 * 100];
+//! NoiseBuilder::fbm_2d(100, 100).generate_scaled(0.0,1.0, noise.as_mut_ptr());
 //!
 //! ```
 //!
 //! ```
-#![no_std]
+#![cfg_attr(not(test), no_std)]
 #![allow(unsafe_op_in_unsafe_fn)]
 extern crate simdeez;
 extern crate alloc;

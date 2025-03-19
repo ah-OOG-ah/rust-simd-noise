@@ -9,7 +9,7 @@ pub use crate::noise_dimensions::NoiseDimensions;
 use crate::noise_helpers_32::Sample32;
 use crate::noise_helpers_64::Sample64;
 pub use crate::noise_type::NoiseType;
-use crate::{get_1d_noise, get_1d_scaled_noise, get_2d_noise, get_2d_scaled_noise, get_3d_noise, get_3d_scaled_noise, VECSIZE};
+use crate::{get_1d_noise, get_1d_scaled_noise, get_2d_noise, get_2d_scaled_noise, get_3d_noise, get_3d_scaled_noise};
 
 use super::{Settings, SimplexSettings};
 

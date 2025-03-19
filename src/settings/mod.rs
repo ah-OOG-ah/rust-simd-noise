@@ -34,6 +34,5 @@ pub trait SimplexSettings {
 mod fbm_settings;
 mod gradient_settings;
 
-use crate::VECSIZE;
 pub use fbm_settings::FbmSettings;
 pub use gradient_settings::GradientSettings;
