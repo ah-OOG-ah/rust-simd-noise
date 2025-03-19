@@ -1,12 +1,12 @@
 use cursednoise::intrinsics::avx2;
-use cursednoise::{GradientSettings, NoiseDimensions, Settings, SimplexSettings};
+use cursednoise::{GradientSettings, NoiseDimensions, Settings, SimplexSettings, VECSIZE};
 
 mod helpers;
 use helpers::{read_from_file_f32, read_from_file_f64, BIN_PATH};
 use simdeez::engines::avx2::Avx2;
 
 #[target_feature(enable = "avx2")]
-unsafe fn do_intrinsic_gradient_1_avx2_32_normal() -> Vec<f32> {
+unsafe fn do_intrinsic_gradient_1_avx2_32_normal() -> [f32; VECSIZE] {
     let dims = NoiseDimensions {
         width: 64,
         ..NoiseDimensions::default(1)
@@ -24,14 +24,14 @@ fn test_intrinsic_gradient_1_avx2_32_normal() {
         BIN_PATH, "intrinsics", "gradient", "32", "1d", "avx2", "normal"
     );
     unsafe {
-        let noise = do_intrinsic_gradient_1_avx2_32_normal();
         let expected = read_from_file_f32(&file_name).unwrap();
+        let noise = &do_intrinsic_gradient_1_avx2_32_normal()[0..expected.len()];
         assert_eq!(expected, noise);
     }
 }
 
 #[target_feature(enable = "avx2")]
-unsafe fn do_intrinsic_gradient_1_avx2_64_normal() -> Vec<f64> {
+unsafe fn do_intrinsic_gradient_1_avx2_64_normal() -> [f64; VECSIZE] {
     let dims = NoiseDimensions {
         width: 64,
         ..NoiseDimensions::default(1)
@@ -49,15 +49,14 @@ fn test_intrinsic_gradient_1_avx2_64_normal() {
         BIN_PATH, "intrinsics", "gradient", "64", "1d", "avx2", "normal"
     );
     unsafe {
-        let noise = do_intrinsic_gradient_1_avx2_64_normal();
-        //save_to_file_f64(&file_name, noise.as_slice()).unwrap();
         let expected = read_from_file_f64(&file_name).unwrap();
+        let noise = &do_intrinsic_gradient_1_avx2_64_normal()[0..expected.len()];
         assert_eq!(expected, noise);
     }
 }
 
 #[target_feature(enable = "avx2")]
-unsafe fn do_intrinsic_gradient_2_avx2_32_normal() -> Vec<f32> {
+unsafe fn do_intrinsic_gradient_2_avx2_32_normal() -> [f32; VECSIZE] {
     let dims = NoiseDimensions {
         width: 64,
         height: 32,
@@ -76,15 +75,14 @@ fn test_intrinsic_gradient_2_avx2_32_normal() {
         BIN_PATH, "intrinsics", "gradient", "32", "2d", "avx2", "normal"
     );
     unsafe {
-        let noise = do_intrinsic_gradient_2_avx2_32_normal();
-        //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
         let expected = read_from_file_f32(&file_name).unwrap();
+        let noise = &do_intrinsic_gradient_2_avx2_32_normal()[0..expected.len()];
         assert_eq!(expected, noise);
     }
 }
 
 #[target_feature(enable = "avx2")]
-unsafe fn do_intrinsic_gradient_2_avx2_64_normal() -> Vec<f64> {
+unsafe fn do_intrinsic_gradient_2_avx2_64_normal() -> [f64; VECSIZE] {
     let dims = NoiseDimensions {
         width: 64,
         height: 32,
@@ -103,15 +101,14 @@ fn test_intrinsic_gradient_2_avx2_64_normal() {
         BIN_PATH, "intrinsics", "gradient", "64", "2d", "avx2", "normal"
     );
     unsafe {
-        let noise = do_intrinsic_gradient_2_avx2_64_normal();
-        //save_to_file_f64(&file_name, noise.as_slice()).unwrap();
         let expected = read_from_file_f64(&file_name).unwrap();
+        let noise = &do_intrinsic_gradient_2_avx2_64_normal()[0..expected.len()];
         assert_eq!(expected, noise);
     }
 }
 
 #[target_feature(enable = "avx2")]
-unsafe fn do_intrinsic_gradient_3_avx2_32_normal() -> Vec<f32> {
+unsafe fn do_intrinsic_gradient_3_avx2_32_normal() -> [f32; VECSIZE] {
     let dims = NoiseDimensions {
         width: 64,
         height: 32,
@@ -139,7 +136,7 @@ fn test_intrinsic_gradient_3_avx2_32_normal() {
 }
 
 #[target_feature(enable = "avx2")]
-unsafe fn do_intrinsic_gradient_3_avx2_64_normal() -> Vec<f64> {
+unsafe fn do_intrinsic_gradient_3_avx2_64_normal() -> [f64; VECSIZE] {
     let dims = NoiseDimensions {
         width: 64,
         height: 32,

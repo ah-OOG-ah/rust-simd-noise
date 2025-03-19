@@ -34,52 +34,49 @@ mod noise_helpers_64;
 mod noise_type;
 mod shared;
 
-use shared::get_scaled_noise;
-use simdeez::fix_tuple_type;
 use simdeez::prelude::*;
 
 use dimensional_being::DimensionalBeing;
 pub use noise_builder::NoiseBuilder;
 pub use noise_dimensions::NoiseDimensions;
 pub use noise_type::NoiseType;
+use simdeez::engines::avx2::Avx2;
 
-pub const VECSIZE: usize = 5 * 33 * 5;
+pub const VECSIZE: usize = 64 * 32 * 16;
 
-simd_compiletime_select!(
-    pub fn get_1d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
-        noise_helpers_32::get_1d_noise::<S>(noise_type)
-    }
-);
 
-simd_compiletime_select!(
-    pub fn get_2d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
-        noise_helpers_32::get_2d_noise::<S>(noise_type)
-    }
-);
+macro_rules! avxecute {
+    ($call:stmt) => {
+        unsafe {
+            Avx2::invoke(#[inline(always)] || { $call })
+        }
+    };
+}
 
-simd_compiletime_select!(
-    pub fn get_3d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
-        noise_helpers_32::get_3d_noise::<S>(noise_type)
-    }
-);
+pub fn get_1d_noise(noise_type: &NoiseType ) -> ([f32; VECSIZE], f32, f32) {
+    avxecute!(noise_helpers_32::get_1d_noise::<Avx2>(noise_type))
+}
 
-simd_compiletime_select!(
-    pub fn get_1d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
-        unsafe { get_scaled_noise::<S, _>(noise_type, get_1d_noise) }
-    }
-);
+pub fn get_2d_noise(noise_type: &NoiseType ) -> ([f32; VECSIZE], f32, f32) {
+    avxecute!(noise_helpers_32::get_2d_noise::<Avx2>(noise_type))
+}
 
-simd_compiletime_select!(
-    pub fn get_2d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
-        unsafe { get_scaled_noise::<S, _>(noise_type, get_2d_noise) }
-    }
-);
+pub fn get_3d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
+    avxecute!(noise_helpers_32::get_3d_noise::<Avx2>(noise_type))
+}
 
-simd_compiletime_select!(
-    pub fn get_3d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
-        unsafe { get_scaled_noise::<S, _>(noise_type, get_3d_noise) }
-    }
-);
+pub fn get_1d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
+    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, get_1d_noise))
+}
+
+pub fn get_2d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
+    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, get_2d_noise))
+}
+
+pub fn get_3d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
+    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, get_3d_noise))
+}
 
 mod settings;
 pub use settings::{FbmSettings, GradientSettings, Settings, SimplexSettings};
+use crate::shared::get_scaled_noise;

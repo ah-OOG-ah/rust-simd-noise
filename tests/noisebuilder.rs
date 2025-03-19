@@ -28,9 +28,8 @@ mod noise {
                         .with_lacunarity(0.5)
                         .generate();
 
-                    //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_fbm_nooffset_f32_2d() {
@@ -48,7 +47,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_fbm_nooffset_f32_3d() {
@@ -89,7 +88,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_fbm_offset_f32_2d() {
@@ -107,7 +106,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_fbm_offset_f32_3d() {
@@ -152,7 +151,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_gradient_nooffset_f32_2d() {
@@ -167,7 +166,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_gradient_nooffset_f32_3d() {
@@ -202,7 +201,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_gradient_offset_f32_2d() {
@@ -217,7 +216,7 @@ mod noise {
 
                     //save_to_file_f32(&file_name, noise.as_slice()).unwrap();
                     let expected = read_from_file_f32(&file_name).unwrap();
-                    assert_eq!(expected, noise);
+                    assert_eq!(expected, &noise[0..expected.len()]);
                 }
                 #[test]
                 fn test_noisebuilder_gradient_offset_f32_3d() {
