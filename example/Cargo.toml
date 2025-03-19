@@ -16,7 +16,6 @@ cursednoise = { path = ".." }
 libc-print = "0.1.23"
 
 [profile.dev]
-strip = true
 lto = true
 codegen-units = 1
 panic = "abort"
