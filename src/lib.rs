@@ -23,6 +23,7 @@
 #![no_std]
 #![allow(unsafe_op_in_unsafe_fn)]
 extern crate simdeez;
+extern crate alloc;
 
 mod dimensional_being;
 pub mod intrinsics;
@@ -53,28 +54,28 @@ macro_rules! avxecute {
     };
 }
 
-pub fn get_1d_noise(noise_type: &NoiseType ) -> ([f32; VECSIZE], f32, f32) {
-    avxecute!(noise_helpers_32::get_1d_noise::<Avx2>(noise_type))
+pub fn get_1d_noise(noise_type: &NoiseType, noise: *mut f32) -> (f32, f32) {
+    avxecute!(noise_helpers_32::get_1d_noise::<Avx2>(noise_type, noise))
 }
 
-pub fn get_2d_noise(noise_type: &NoiseType ) -> ([f32; VECSIZE], f32, f32) {
-    avxecute!(noise_helpers_32::get_2d_noise::<Avx2>(noise_type))
+pub fn get_2d_noise(noise_type: &NoiseType, noise: *mut f32) -> (f32, f32) {
+    avxecute!(noise_helpers_32::get_2d_noise::<Avx2>(noise_type, noise))
 }
 
-pub fn get_3d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
-    avxecute!(noise_helpers_32::get_3d_noise::<Avx2>(noise_type))
+pub fn get_3d_noise(noise_type: &NoiseType, noise: *mut f32) -> (f32, f32) {
+    avxecute!(noise_helpers_32::get_3d_noise::<Avx2>(noise_type, noise))
 }
 
-pub fn get_1d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
-    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, get_1d_noise))
+pub fn get_1d_scaled_noise(noise_type: &NoiseType, noise: *mut f32) {
+    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, noise, get_1d_noise))
 }
 
-pub fn get_2d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
-    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, get_2d_noise))
+pub fn get_2d_scaled_noise(noise_type: &NoiseType, noise: *mut f32) {
+    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, noise, get_2d_noise))
 }
 
-pub fn get_3d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
-    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, get_3d_noise))
+pub fn get_3d_scaled_noise(noise_type: &NoiseType, noise: *mut f32) {
+    avxecute!(get_scaled_noise::<Avx2, _>(noise_type, noise, get_3d_noise))
 }
 
 mod settings;

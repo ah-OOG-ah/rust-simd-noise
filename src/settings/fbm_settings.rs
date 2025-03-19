@@ -88,25 +88,25 @@ impl Settings for FbmSettings {
         //todo
     }
 
-    fn generate(self) -> ([f32; VECSIZE], f32, f32) {
+    fn generate(self, noise: *mut f32) -> (f32, f32) {
         let d = self.dim.dim;
         match d {
-            1 => get_1d_noise(&NoiseType::Fbm(self)),
-            2 => get_2d_noise(&NoiseType::Fbm(self)),
-            3 => get_3d_noise(&NoiseType::Fbm(self)),
+            1 => get_1d_noise(&NoiseType::Fbm(self), noise),
+            2 => get_2d_noise(&NoiseType::Fbm(self), noise),
+            3 => get_3d_noise(&NoiseType::Fbm(self), noise),
             _ => panic!("not implemented"),
         }
     }
 
-    fn generate_scaled(self, min: f32, max: f32) -> [f32; VECSIZE] {
+    fn generate_scaled(self, min: f32, max: f32, noise: *mut f32) {
         let d = self.dim.dim;
         let mut new_self = self;
         new_self.dim.min = min;
         new_self.dim.max = max;
         match d {
-            1 => get_1d_scaled_noise(&NoiseType::Fbm(new_self)),
-            2 => get_2d_scaled_noise(&NoiseType::Fbm(new_self)),
-            3 => get_3d_scaled_noise(&NoiseType::Fbm(new_self)),
+            1 => get_1d_scaled_noise(&NoiseType::Fbm(new_self), noise),
+            2 => get_2d_scaled_noise(&NoiseType::Fbm(new_self), noise),
+            3 => get_3d_scaled_noise(&NoiseType::Fbm(new_self), noise),
             _ => panic!("not implemented"),
         }
     }

@@ -15,7 +15,6 @@ use crate::noise::simplex_64;
 use crate::noise_helpers_32;
 use crate::noise_helpers_64;
 use crate::shared::scale_noise;
-use crate::VECSIZE;
 use crate::{DimensionalBeing, NoiseType};
 
 use simdeez::{SimdTransmuteF32, SimdTransmuteF64};

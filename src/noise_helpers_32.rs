@@ -1,5 +1,5 @@
 use crate::dimensional_being::DimensionalBeing;
-use crate::{FbmSettings, GradientSettings, NoiseType, Settings, VECSIZE};
+use crate::{FbmSettings, GradientSettings, NoiseType, Settings};
 
 use simdeez::prelude::*;
 
@@ -16,8 +16,8 @@ pub trait Sample32<S: Simd>: DimensionalBeing + Settings {
 
 #[inline(always)]
 unsafe fn get_1d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
-    settings: Settings,
-) -> ([f32; VECSIZE], f32, f32) {
+    settings: Settings, noise: *mut f32
+) -> (f32, f32) {
     let dim = settings.get_dimensions();
     let freq_x = S::Vf32::set1(settings.get_freq_x());
     let start_x = dim.x;
@@ -28,8 +28,7 @@ unsafe fn get_1d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
     let mut min = f32::MAX;
     let mut max = f32::MIN;
 
-    let mut result = [0.0; VECSIZE];
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = noise;
     let mut i = 0;
     let remainder = width % VEC_WIDTH;
     let mut x_arr = [0.0; VEC_WIDTH];
@@ -71,13 +70,13 @@ unsafe fn get_1d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
             max = max_s[i];
         }
     }
-    (result, min, max)
+    (min, max)
 }
 
 #[inline(always)]
 unsafe fn get_2d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
-    settings: Settings,
-) -> ([f32; VECSIZE], f32, f32) {
+    settings: Settings, noise: *mut f32
+) -> (f32, f32) {
     let dim = settings.get_dimensions();
     let freq_x = S::Vf32::set1(settings.get_freq_x());
     let freq_y = S::Vf32::set1(settings.get_freq_y());
@@ -91,8 +90,7 @@ unsafe fn get_2d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
     let mut min = f32::MAX;
     let mut max = f32::MIN;
 
-    let mut result = [0.0; VECSIZE];
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = noise;
     let mut y = S::Vf32::set1(start_y);
     let mut i = 0;
     let remainder = width % VEC_WIDTH;
@@ -137,13 +135,13 @@ unsafe fn get_2d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
             max = max_s[i];
         }
     }
-    (result, min, max)
+    (min, max)
 }
 
 #[inline(always)]
 unsafe fn get_3d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
-    settings: Settings,
-) -> ([f32; VECSIZE], f32, f32) {
+    settings: Settings, noise: *mut f32
+) -> (f32, f32) {
     let dim = settings.get_dimensions();
     let freq_x = S::Vf32::set1(settings.get_freq_x());
     let freq_y = S::Vf32::set1(settings.get_freq_y());
@@ -160,8 +158,7 @@ unsafe fn get_3d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
     let mut min = f32::MAX;
     let mut max = f32::MIN;
 
-    let mut result = [0.0; VECSIZE];
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = noise;
     let mut i = 0;
     let remainder = width % VEC_WIDTH;
     let mut x_arr = [0.0; VEC_WIDTH];
@@ -210,15 +207,15 @@ unsafe fn get_3d_noise_helper_f32<S: Simd, Settings: Sample32<S>>(
             max = max_s[i];
         }
     }
-    (result, min, max)
+    (min, max)
 }
 
 #[inline(always)]
 #[allow(dead_code)]
-pub unsafe fn get_1d_noise<S: Simd>(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
+pub unsafe fn get_1d_noise<S: Simd>(noise_type: &NoiseType, noise: *mut f32) -> (f32, f32) {
     match noise_type {
-        NoiseType::Fbm(s) => get_1d_noise_helper_f32::<S, FbmSettings>(*s),
-        NoiseType::Gradient(s) => get_1d_noise_helper_f32::<S, GradientSettings>(*s),
+        NoiseType::Fbm(s) => get_1d_noise_helper_f32::<S, FbmSettings>(*s, noise),
+        NoiseType::Gradient(s) => get_1d_noise_helper_f32::<S, GradientSettings>(*s, noise),
     }
 }
 
@@ -229,10 +226,10 @@ pub unsafe fn get_1d_noise<S: Simd>(noise_type: &NoiseType) -> ([f32; VECSIZE], 
 /// in a single pass.
 #[inline(always)]
 #[allow(dead_code)]
-pub unsafe fn get_2d_noise<S: Simd>(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
+pub unsafe fn get_2d_noise<S: Simd>(noise_type: &NoiseType, noise: *mut f32) -> (f32, f32) {
     match noise_type {
-        NoiseType::Fbm(s) => get_2d_noise_helper_f32::<S, FbmSettings>(*s),
-        NoiseType::Gradient(s) => get_2d_noise_helper_f32::<S, GradientSettings>(*s),
+        NoiseType::Fbm(s) => get_2d_noise_helper_f32::<S, FbmSettings>(*s, noise),
+        NoiseType::Gradient(s) => get_2d_noise_helper_f32::<S, GradientSettings>(*s, noise),
     }
 }
 
@@ -243,9 +240,9 @@ pub unsafe fn get_2d_noise<S: Simd>(noise_type: &NoiseType) -> ([f32; VECSIZE], 
 /// in a single pass.
 #[inline(always)]
 #[allow(dead_code)]
-pub unsafe fn get_3d_noise<S: Simd>(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
+pub unsafe fn get_3d_noise<S: Simd>(noise_type: &NoiseType, noise: *mut f32) -> (f32, f32) {
     match noise_type {
-        NoiseType::Fbm(s) => get_3d_noise_helper_f32::<S, FbmSettings>(*s),
-        NoiseType::Gradient(s) => get_3d_noise_helper_f32::<S, GradientSettings>(*s),
+        NoiseType::Fbm(s) => get_3d_noise_helper_f32::<S, FbmSettings>(*s, noise),
+        NoiseType::Gradient(s) => get_3d_noise_helper_f32::<S, GradientSettings>(*s, noise),
     }
 }

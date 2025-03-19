@@ -7,7 +7,6 @@ use crate::noise::simplex_32;
 use crate::noise::simplex_64;
 use crate::noise_helpers_32;
 use crate::noise_helpers_64;
-use crate::VECSIZE;
 use crate::{DimensionalBeing, NoiseType};
 
 use crate::shared::scale_noise;

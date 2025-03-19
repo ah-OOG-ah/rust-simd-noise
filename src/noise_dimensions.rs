@@ -1,3 +1,5 @@
+#![allow(clippy::needless_return)]
+
 #[derive(Copy, Clone)]
 pub struct NoiseDimensions {
     pub dim: usize,
@@ -29,5 +31,9 @@ impl NoiseDimensions {
             max: 1.0,
             seed: 1,
         }
+    }
+
+    pub fn len(self) -> usize {
+        return self.width * self.width * self.height;
     }
 }

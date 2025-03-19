@@ -114,9 +114,9 @@ macro_rules! get_noise {
         /// are returned so you can scale and transform the noise as you see fit
         /// in a single pass.
         pub unsafe fn $fn_name<S: simdeez::Simd>(
-            noise_type: &NoiseType,
-        ) -> ([$f_type; VECSIZE], $f_type, $f_type) {
-            $mod::$call::<S>(noise_type)
+            noise_type: &NoiseType, noise: *mut $f_type
+        ) -> ($f_type, $f_type) {
+            $mod::$call::<S>(noise_type, noise)
         }
     };
 }
@@ -126,11 +126,10 @@ macro_rules! get_noise_scaled {
         /// `start_x` can be used to provide an offset in the coordinates.
         /// `scaled_min` and `scaled_max` specify the range you want the noise scaled to.
 
-        pub unsafe fn $fn_name<S: simdeez::Simd>(noise_type: &NoiseType) -> [$f_type; VECSIZE] {
-            let (mut noise, min, max) = $call::<S>(noise_type);
+        pub unsafe fn $fn_name<S: simdeez::Simd>(noise_type: &NoiseType, noise: *mut $f_type) {
+            let (min, max) = $call::<S>(noise_type, noise);
             let dim = noise_type.get_dimensions();
-            scale_noise::<S>(dim.min, dim.max, min, max, &mut noise);
-            noise
+            scale_noise::<S>(dim.min, dim.max, min, max, noise, dim.len());
         }
     };
 }

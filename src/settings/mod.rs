@@ -18,11 +18,11 @@ pub trait Settings {
 
     /// Generate a chunk of noise based on your settings, and the min and max value
     /// generated, so you can scale it as you wish
-    fn generate(self) -> ([f32; VECSIZE], f32, f32);
+    fn generate(self, noise: *mut f32) -> (f32, f32);
     fn validate(&self);
 
     /// Generate a chunk of noise with values scaled from min to max
-    fn generate_scaled(self, min: f32, max: f32) -> [f32; VECSIZE];
+    fn generate_scaled(self, min: f32, max: f32, noise: *mut f32);
 }
 
 pub trait SimplexSettings {
