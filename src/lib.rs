@@ -21,7 +21,7 @@
 //!
 //! ```
 #![no_std]
-
+#![allow(unsafe_op_in_unsafe_fn)]
 extern crate simdeez;
 
 mod dimensional_being;
