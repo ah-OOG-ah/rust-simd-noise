@@ -1,4 +1,3 @@
-use alloc::vec::Vec;
 pub use crate::noise_dimensions::NoiseDimensions;
 pub use crate::noise_type::NoiseType;
 
@@ -19,11 +18,11 @@ pub trait Settings {
 
     /// Generate a chunk of noise based on your settings, and the min and max value
     /// generated, so you can scale it as you wish
-    fn generate(self) -> (Vec<f32>, f32, f32);
+    fn generate(self) -> ([f32; VECSIZE], f32, f32);
     fn validate(&self);
 
     /// Generate a chunk of noise with values scaled from min to max
-    fn generate_scaled(self, min: f32, max: f32) -> Vec<f32>;
+    fn generate_scaled(self, min: f32, max: f32) -> [f32; VECSIZE];
 }
 
 pub trait SimplexSettings {
@@ -35,5 +34,6 @@ pub trait SimplexSettings {
 mod fbm_settings;
 mod gradient_settings;
 
+use crate::VECSIZE;
 pub use fbm_settings::FbmSettings;
 pub use gradient_settings::GradientSettings;

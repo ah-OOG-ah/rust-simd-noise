@@ -23,7 +23,6 @@
 #![no_std]
 
 extern crate simdeez;
-extern crate alloc;
 
 mod dimensional_being;
 pub mod intrinsics;
@@ -35,9 +34,8 @@ mod noise_helpers_64;
 mod noise_type;
 mod shared;
 
-use alloc::vec::Vec;
-use simdeez::fix_tuple_type;
 use shared::get_scaled_noise;
+use simdeez::fix_tuple_type;
 use simdeez::prelude::*;
 
 use dimensional_being::DimensionalBeing;
@@ -45,38 +43,40 @@ pub use noise_builder::NoiseBuilder;
 pub use noise_dimensions::NoiseDimensions;
 pub use noise_type::NoiseType;
 
+pub const VECSIZE: usize = 5 * 33 * 5;
+
 simd_compiletime_select!(
-    pub fn get_1d_noise(noise_type: &NoiseType) -> (Vec<f32>, f32, f32) {
+    pub fn get_1d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
         noise_helpers_32::get_1d_noise::<S>(noise_type)
     }
 );
 
 simd_compiletime_select!(
-    pub fn get_2d_noise(noise_type: &NoiseType) -> (Vec<f32>, f32, f32) {
+    pub fn get_2d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
         noise_helpers_32::get_2d_noise::<S>(noise_type)
     }
 );
 
 simd_compiletime_select!(
-    pub fn get_3d_noise(noise_type: &NoiseType) -> (Vec<f32>, f32, f32) {
+    pub fn get_3d_noise(noise_type: &NoiseType) -> ([f32; VECSIZE], f32, f32) {
         noise_helpers_32::get_3d_noise::<S>(noise_type)
     }
 );
 
 simd_compiletime_select!(
-    pub fn get_1d_scaled_noise(noise_type: &NoiseType) -> Vec<f32> {
+    pub fn get_1d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
         unsafe { get_scaled_noise::<S, _>(noise_type, get_1d_noise) }
     }
 );
 
 simd_compiletime_select!(
-    pub fn get_2d_scaled_noise(noise_type: &NoiseType) -> Vec<f32> {
+    pub fn get_2d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
         unsafe { get_scaled_noise::<S, _>(noise_type, get_2d_noise) }
     }
 );
 
 simd_compiletime_select!(
-    pub fn get_3d_scaled_noise(noise_type: &NoiseType) -> Vec<f32> {
+    pub fn get_3d_scaled_noise(noise_type: &NoiseType) -> [f32; VECSIZE] {
         unsafe { get_scaled_noise::<S, _>(noise_type, get_3d_noise) }
     }
 );

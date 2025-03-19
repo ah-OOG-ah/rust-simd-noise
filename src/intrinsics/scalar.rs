@@ -1,13 +1,13 @@
 //! Noise functions that compute one value at a time
 //!
 //! These are much slower than SIMD, and hence on capable hardware have little use but testing.
-
 use crate::noise::fbm_32;
 use crate::noise::fbm_64;
 use crate::noise::simplex_32;
 use crate::noise::simplex_64;
 use crate::noise_helpers_32;
 use crate::noise_helpers_64;
+use crate::VECSIZE;
 use crate::{DimensionalBeing, NoiseType};
 
 use crate::shared::scale_noise;
@@ -15,7 +15,6 @@ use crate::shared::scale_noise;
 use simdeez::{SimdTransmuteF32, SimdTransmuteF64};
 
 use core::f32;
-use alloc::vec::Vec;
 
 simplex!(
     "1d",

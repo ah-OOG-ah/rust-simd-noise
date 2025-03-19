@@ -1,4 +1,3 @@
-use alloc::vec::Vec;
 use simdeez::prelude::*;
 
 use crate::dimensional_being::DimensionalBeing;
@@ -10,7 +9,7 @@ pub use crate::noise_dimensions::NoiseDimensions;
 use crate::noise_helpers_32::Sample32;
 use crate::noise_helpers_64::Sample64;
 pub use crate::noise_type::NoiseType;
-use crate::{get_1d_noise, get_1d_scaled_noise, get_2d_noise, get_2d_scaled_noise, get_3d_noise, get_3d_scaled_noise};
+use crate::{get_1d_noise, get_1d_scaled_noise, get_2d_noise, get_2d_scaled_noise, get_3d_noise, get_3d_scaled_noise, VECSIZE};
 
 use super::{Settings, SimplexSettings};
 
@@ -89,7 +88,7 @@ impl Settings for FbmSettings {
         //todo
     }
 
-    fn generate(self) -> (Vec<f32>, f32, f32) {
+    fn generate(self) -> ([f32; VECSIZE], f32, f32) {
         let d = self.dim.dim;
         match d {
             1 => get_1d_noise(&NoiseType::Fbm(self)),
@@ -99,7 +98,7 @@ impl Settings for FbmSettings {
         }
     }
 
-    fn generate_scaled(self, min: f32, max: f32) -> Vec<f32> {
+    fn generate_scaled(self, min: f32, max: f32) -> [f32; VECSIZE] {
         let d = self.dim.dim;
         let mut new_self = self;
         new_self.dim.min = min;

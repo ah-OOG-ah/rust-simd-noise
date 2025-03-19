@@ -15,14 +15,16 @@ publish = false
 
 [dependencies]
 simdeez = { path = "simdeez", features = ["no_std"] }
+# talc = "4.4.1" # a no_std allocator, and a fairly fast one at that
 
 [dev-dependencies]
-criterion = "0.4.0"
 byteorder = "1.4.3"
 
-[[bench]]
-name = "benchmarks"
-harness = false
+[profile.dev]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
 
 [profile.release]
 strip = true

@@ -1,7 +1,6 @@
-use alloc::vec::Vec;
 use simdeez::prelude::*;
 
-use crate::{dimensional_being::DimensionalBeing, NoiseType};
+use crate::{dimensional_being::DimensionalBeing, NoiseType, VECSIZE};
 
 #[inline(always)]
 pub unsafe fn scale_noise<S: Simd>(
@@ -9,7 +8,7 @@ pub unsafe fn scale_noise<S: Simd>(
     scale_max: f32,
     min: f32,
     max: f32,
-    data: &mut Vec<f32>,
+    data: &mut [f32; VECSIZE],
 ) {
     let scale_range = scale_max - scale_min;
     let range = max - min;
@@ -32,7 +31,7 @@ pub unsafe fn scale_noise<S: Simd>(
     }
 }
 
-pub(crate) unsafe fn get_scaled_noise<S: Simd, F: Fn(&NoiseType) -> (Vec<f32>, f32, f32)>(noise_type: &NoiseType, noise_fn: F) -> Vec<f32> {
+pub(crate) unsafe fn get_scaled_noise<S: Simd, F: Fn(&NoiseType) -> ([f32; VECSIZE], f32, f32)>(noise_type: &NoiseType, noise_fn: F) -> [f32; VECSIZE] {
     let (mut noise, min, max) = noise_fn(noise_type);
     let dim = noise_type.get_dimensions();
     scale_noise::<S>(dim.min, dim.max, min, max, &mut noise);
