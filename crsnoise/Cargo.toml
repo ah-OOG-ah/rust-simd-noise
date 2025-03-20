@@ -1,5 +1,5 @@
 [package]
-name = "cursednoise-example"
+name = "crsnoise"
 version = "0.0.1"
 authors = ["ah-OOG-ah"]
 description = "Example app that uses cursed noise"

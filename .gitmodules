@@ -1,3 +1,6 @@
 [submodule "simdeez"]
 	path = simdeez
 	url = https://github.com/arduano/simdeez
+[submodule "libm"]
+	path = libm
+	url = https://github.com/ah-OOG-ah/libm.git

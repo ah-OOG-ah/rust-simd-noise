@@ -21,10 +21,10 @@
 //! ```
 //!
 //! ```
-#![cfg_attr(not(test), no_std)]
+#![no_std]
 #![allow(unsafe_op_in_unsafe_fn)]
+extern crate panic_abort;
 extern crate simdeez;
-extern crate alloc;
 
 mod dimensional_being;
 pub mod intrinsics;
@@ -80,5 +80,5 @@ pub fn get_3d_scaled_noise(noise_type: &NoiseType, noise: *mut f32) {
 }
 
 mod settings;
-pub use settings::{FbmSettings, GradientSettings, Settings, SimplexSettings};
 use crate::shared::get_scaled_noise;
+pub use settings::{FbmSettings, GradientSettings, Settings, SimplexSettings};

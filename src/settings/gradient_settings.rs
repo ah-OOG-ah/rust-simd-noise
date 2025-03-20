@@ -37,6 +37,8 @@ impl Settings for GradientSettings {
             freq_z: 0.02,
         }
     }
+
+    #[inline(always)]
     fn with_seed(&mut self, seed: i32) -> &mut GradientSettings {
         self.dim.seed = seed;
         self
@@ -55,6 +57,7 @@ impl Settings for GradientSettings {
         self
     }
 
+    #[inline(always)]
     fn with_freq_3d(&mut self, freq_x: f32, freq_y: f32, freq_z: f32) -> &mut GradientSettings {
         self.freq_x = freq_x;
         self.freq_y = freq_y;
@@ -93,6 +96,7 @@ impl Settings for GradientSettings {
         }
     }
 
+    #[inline(always)]
     fn generate_scaled(self, min: f32, max: f32, noise: *mut f32) {
         let d = self.dim.dim;
         let mut new_self = self;

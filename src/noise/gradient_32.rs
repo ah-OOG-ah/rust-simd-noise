@@ -87,29 +87,3 @@ pub fn grad3d<S: Simd>(seed: i32, i: S::Vi32, j: S::Vi32, k: S::Vi32) -> [S::Vf3
     );
     [gx, gy, gz]
 }
-
-#[inline(always)]
-pub fn grad4<S: Simd>(
-    seed: i32,
-    hash: S::Vi32,
-    x: S::Vf32,
-    y: S::Vf32,
-    z: S::Vf32,
-    t: S::Vf32,
-) -> S::Vf32 {
-    let h = (S::Vi32::set1(seed) ^ hash) & S::Vi32::set1(31);
-    let mut mask = (S::Vi32::set1(24).cmp_gt(h)).bitcast_f32();
-    let u = mask.blendv(y, x);
-    mask = (S::Vi32::set1(16).cmp_gt(h)).bitcast_f32();
-    let v = mask.blendv(z, y);
-    mask = (S::Vi32::set1(8).cmp_gt(h)).bitcast_f32();
-    let w = mask.blendv(t, z);
-
-    let h_and_1 = ((h & S::Vi32::set1(1)).cmp_eq(S::Vi32::zeroes())).bitcast_f32();
-    let h_and_2 = ((h & S::Vi32::set1(2)).cmp_eq(S::Vi32::zeroes())).bitcast_f32();
-    let h_and_4 = ((h & S::Vi32::set1(4)).cmp_eq(S::Vi32::zeroes())).bitcast_f32();
-
-    h_and_1.blendv(S::Vf32::zeroes() - u, u)
-        + h_and_2.blendv(S::Vf32::zeroes() - v, v)
-        + h_and_4.blendv(S::Vf32::zeroes() - w, w)
-}

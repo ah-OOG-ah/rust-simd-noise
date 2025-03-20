@@ -3,7 +3,7 @@
 //! Useful for writing your own SIMD-generic code for use cases not covered by the higher level
 //! interfaces.
 
-use crate::noise::gradient_32::{grad1, grad2, grad3d, grad3d_dot, grad4};
+use crate::noise::gradient_32::{grad1, grad2, grad3d, grad3d_dot};
 use crate::noise::ops::gather_32;
 
 use simdeez::prelude::*;
@@ -29,8 +29,6 @@ pub const F2_64: f64 = 0.36602540378;
 /// Skew factor for 3D simplex noise
 const F3_32: f32 = 1.0 / 3.0;
 pub const F3_64: f64 = 1.0 / 3.0;
-/// Skew factor for 4D simplex noise
-const F4_32: f32 = 0.309016994;
 pub const F4_64: f64 = 0.309016994;
 /// Unskew factor for 2D simplex noise
 const G2_32: f32 = 0.2113248654;
@@ -42,15 +40,8 @@ const G3_32: f32 = 1.0 / 6.0;
 pub const G3_64: f64 = 1.0 / 6.0;
 const G33_32: f32 = 3.0 / 6.0 - 1.0;
 pub const G33_64: f64 = 3.0 / 6.0 - 1.0;
-/// Unskew factor for 4D simplex noise
-const G4_32: f32 = 0.138196601;
 pub const G4_64: f64 = 0.138196601;
-const G24_32: f32 = 2.0 * G4_32;
 pub const G24_64: f64 = 2.0 * G4_64;
-const G34_32: f32 = 3.0 * G4_32;
-pub const G34_64: f64 = 3.0 * G4_64;
-const G44_32: f32 = 4.0 * G4_32;
-pub const G44_64: f64 = 4.0 * G4_64;
 
 static PERM: [i32; 512] = [
     151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69,

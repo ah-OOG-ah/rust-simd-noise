@@ -105,6 +105,7 @@ impl NoiseBuilder {
         GradientSettings::default(dim)
     }
 
+    #[inline(always)]
     pub fn gradient_3d_offset(
         x_offset: f32,
         width: usize,

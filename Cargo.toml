@@ -3,7 +3,7 @@ exclude = ["*.jpg"]
 name = "cursednoise"
 version = "3.1.7"
 authors = ["ah-OOG-ah", "Jack Mott <jack.mott@gmail.com>"]
-description = "SIMD accelerate noise library with runtime feature detection"
+description = "AVX2-accelerated noise library"
 license = "LGPL-3.0-or-later"
 documentation = "https://docs.rs/simdnoise/"
 readme = "README.md"
@@ -13,12 +13,13 @@ categories = ["game-engines", "multimedia::images"]
 edition = "2024"
 publish = false
 
-[dependencies]
-simdeez = { path = "simdeez", features = ["no_std"] }
-# talc = "4.4.1" # a no_std allocator, and a fairly fast one at that
+[lib]
+crate-type = ["cdylib"]
 
-[dev-dependencies]
-byteorder = "1.4.3"
+[dependencies]
+simdeez = { path = "simdeez" }
+# talc = "4.4.1" # a no_std allocator, and a fairly fast one at that
+panic-abort = "0.3.2"
 
 [profile.release]
 strip = true
