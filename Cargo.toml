@@ -13,13 +13,8 @@ categories = ["game-engines", "multimedia::images"]
 edition = "2024"
 publish = false
 
-[lib]
-crate-type = ["cdylib"]
-
 [dependencies]
 simdeez = { path = "simdeez" }
-# talc = "4.4.1" # a no_std allocator, and a fairly fast one at that
-panic-abort = "0.3.2"
 
 [profile.release]
 strip = true
